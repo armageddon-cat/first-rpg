@@ -9,10 +9,6 @@ use app\exceptions\InvalidGuidException;
 use app\exceptions\JsonDecodingException;
 use app\tools\DateTimeHelper;
 
-/**
- * Class ServerActions
- * @package Tanks
- */
 class ServerActions
 {
     /**
@@ -25,11 +21,10 @@ class ServerActions
     public static function onOpen($connect): void
     {
         var_dump('connection opened');
-        $now  = DateTimeHelper::createDateTimeMicro();
-//        $tank = new Tank($now);
-//        TankRegistry::add($tank);
-//        $tankString = $tank->prepareToClientJson();
-//        fwrite($connect, WebSocket::encode($tankString));
+        $map = new Map();
+        $string = $map->prepareJsonToClient();
+//        var_dump($string);
+        fwrite($connect, WebSocket::encode($string));
     }
     
     public static function onClose(): void
@@ -52,18 +47,18 @@ class ServerActions
             
             return;
         }
-        if (isset($decMessage['type']) && $decMessage['type'] === 'close') {
-            var_dump('connection closed');
-    
-            return;
-        }
-        
+
         try {
             $message = new ClientMessageContainer($decMessage);
         } catch (EmptyValueException | JsonDecodingException | InvalidGuidException | InvalidDateTimeFormatException $e) {
             var_dump($e);
             
             return;
+        }
+        $move = new Move($message);
+        $map = Map::getInstance();
+        if ($move->isAllowed()) {
+            $map->player->makeMove($move);
         }
 //        // create bullet if exists
 //        Bullet::create($message);
@@ -75,7 +70,7 @@ class ServerActions
 //        BulletRegistry::moveBullets();
 //        // now we can send result back
 //        $storage = TankRegistry::getStorageJSON();
-//        $encMessage = WebSocket::encode($storage);
-//        fwrite($connect, $encMessage);
+        $string = $map->prepareJsonToClient();
+        fwrite($connect, WebSocket::encode($string));
     }
 }

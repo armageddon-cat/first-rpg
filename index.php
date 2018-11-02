@@ -10,7 +10,12 @@
 <body>
     <canvas id="canvas" width="800" height="800" style="border: 1px solid;"></canvas>
     <script>
-        SIZE_CANVAS = 800;
+        var wall = new Image;
+        var player = new Image;
+        wall.src = 'src/img/wall.jpg';
+        player.src = 'src/img/player.jpg';
+
+        CANVAS_SIZE = 800;
         CANVAS_START = 0;
         CODE_LEFT_ARROW = 37;
         CODE_UP_ARROW = 38;
@@ -41,16 +46,31 @@
         var canvas = document.getElementById('canvas');
         var canvasContext = canvas.getContext('2d');
         canvasContext.save();
-        setInterval(function () {
-            if (buffer != '') {
-                socket.send(buffer);
+        // setInterval(function () {
+        //     if (buffer != '') {
+        //         socket.send(buffer);
+        //     }
+        //     buffer = '';
+        // }, 200);
+
+        window.addEventListener('keydown', function (e) {
+            if (CODE_ARROWS.indexOf(e.keyCode) === -1) { // not arrow
+                return;
             }
-            buffer = '';
-        }, 200);
+            buffer = JSON.stringify({'direction':e.keyCode});
+            socket.send(buffer)
+        });
 
-        window.addEventListener('keydown', function (e) {});
-
-        socket.onmessage = function (event) {};
+        socket.onmessage = function (event) {
+            var mapData = JSON.parse(event.data);
+            console.log(mapData); // TODO remove debug!!
+            canvasContext.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+            var walls = mapData.walls;
+            walls.forEach(function(item) {
+                canvasContext.drawImage(wall, item.x, item.y);
+            });
+            canvasContext.drawImage(player, mapData.player.x, mapData.player.y);
+        };
     </script>
 </body>
 </html>

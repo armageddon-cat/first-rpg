@@ -4,22 +4,11 @@ declare(strict_types=1);
 namespace app;
 
 use app\exceptions\EmptyPayLoadException;
-use app\exceptions\EmptyValueException;
-use app\exceptions\InvalidDateTimeFormatException;
 use app\exceptions\JsonDecodingException;
-use app\tools\DateTimeHelper;
-use app\validators\UnixTimeStampFloatValidator;
 
 class ClientMessageContainer
 {
-    /**
-     * @var string
-     */
-    private $id;
-    /**
-     * @var \DateTime
-     */
-    private $time;
+    private $data;
     /**
      * @var string
      */
@@ -29,39 +18,19 @@ class ClientMessageContainer
     {
         $this->setPayLoad($decodedMessage);
         $payLoadObject = $this->jsonDecodePayLoad($this->getPayLoad());
-        $this->setId($payLoadObject);
-        $this->setTime($payLoadObject);
+        $this->setData($payLoadObject);
     }
     
-    public function getId(): string
+    public function getData(): \stdClass
     {
-        return $this->id;
+        return $this->data;
     }
     
-    protected function setId(\stdClass $payLoadObject): void
+    protected function setData(\stdClass $payLoadObject): void
     {
-        if (empty($payLoadObject->id)) {
-            throw new EmptyValueException('id');
-        }
-        $this->id = (string)$payLoadObject->id;
-    }
-    
-    public function getTime(): \DateTime
-    {
-        return $this->time;
+        $this->data = $payLoadObject;
     }
 
-    /**
-     * maybe fail when milliseconds is null
-     */
-    protected function setTime(\stdClass $payLoadObject): void
-    {
-        if (!isset($payLoadObject->time) || !UnixTimeStampFloatValidator::validate($payLoadObject->time)) {
-            throw new InvalidDateTimeFormatException();
-        }
-        $this->time = \DateTime::createFromFormat(DateTimeHelper::UNIX_TIMESTAMP_MICROSECONDS, (string)$payLoadObject->time); // todo check this
-    }
-    
     protected function getPayLoad(): string
     {
         return $this->payLoad;
