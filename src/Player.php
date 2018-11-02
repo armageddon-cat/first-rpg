@@ -11,6 +11,9 @@ class Player
     public $x;
     public $y;
 
+    public const SIZE_X = 20;
+    public const SIZE_Y = 20;
+
     /**
      * Player constructor.
      * @throws \Exception
@@ -18,9 +21,9 @@ class Player
     public function __construct()
     {
         // todo add check free space
-        $block = new Block();
-        $block->x = random_int(Canvas::CANVAS_START, Canvas::CANVAS_SIZE);
-        $block->y = random_int(Canvas::CANVAS_START, Canvas::CANVAS_SIZE);
+        $x = random_int(Canvas::CANVAS_START, Canvas::CANVAS_SIZE);
+        $y = random_int(Canvas::CANVAS_START, Canvas::CANVAS_SIZE);
+        $block = new Block($x, $y, self::SIZE_X, self::SIZE_Y);
 //        $block->isFree();
 //        while (!$block->isFree()) {
 //            $block->x = random_int(Canvas::CANVAS_START, Canvas::CANVAS_SIZE);

@@ -24,9 +24,9 @@ abstract class AbstractRegistry extends \ArrayIterator
         static::$instance = $instance;
     }
     
-    public static function add(PointAbstract $point): void
+    public static function add($point): void
     {
-        static::getInstance()->offsetSet($point->getId(), $point);
+        static::getInstance()->offsetSet($point->initX . $point->initX, $point); // todo refactor this all shit
     }
         
     public static function exists(string $id): bool
@@ -34,9 +34,9 @@ abstract class AbstractRegistry extends \ArrayIterator
         return static::getInstance()->offsetExists($id);
     }
     
-    public static function remove(PointAbstract $point): void
+    public static function remove($point): void
     {
-        static::getInstance()->offsetUnset($point->getId());
+        static::getInstance()->offsetUnset($point);
     }
     
     public static function unsetRegistry(): void

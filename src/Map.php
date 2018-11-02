@@ -37,10 +37,10 @@ class Map
      */
     private function generateWalls(): void
     {
-        $this->walls = new WallRegistry();
+        $this->walls = WallRegistry::getInstance();
         for ($i = 0;$i < 50;$i++) {
             $wall = new Wall();
-            $this->walls->append($wall);
+            $this->walls::add($wall);
         }
     }
 

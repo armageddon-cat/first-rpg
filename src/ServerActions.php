@@ -55,8 +55,11 @@ class ServerActions
             
             return;
         }
-        $move = new Move($message);
+
         $map = Map::getInstance();
+
+        $block = new Block($map->player->x, $map->player->y, $map->player::SIZE_X, $map->player::SIZE_Y);
+        $move = new Move($message, $block);
         if ($move->isAllowed()) {
             $map->player->makeMove($move);
         }

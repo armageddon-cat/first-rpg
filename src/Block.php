@@ -7,36 +7,59 @@ class Block
 {
     public $x;
     public $y;
+    public $sizeX;
+    public $sizeY;
+    private $coordinates;
 
-    public function isFree()
+    public function __construct($x, $y, $sizeX, $sizeY)
     {
-        return $this->isWall();
+        $this->x = $x;
+        $this->y = $y;
+        $this->sizeX = $sizeX;
+        $this->sizeY = $sizeY;
+    }
+
+    public function isFree(): bool
+    {
+        $this->setBlockMatrix();
+        return !$this->isWall();
     }
 
     private function isWall(): bool
     {
         // todo optimize
         $walls = WallRegistry::getInstance();
+
         foreach ($walls as $wall) {
-            $collisionX = false;
-            for ($x = $wall->initX; $x <= $wall->initX + Wall::SIZE_X; $x++) {
-                if ($x === $this->x) {
-                    $collisionX = true;
-                    break;
+            $collision = false;
+            $wallMaxX = $wall->initX + Wall::SIZE_X;
+            $wallMaxY = $wall->initY + Wall::SIZE_Y;
+            for ($x = $wall->initX; $x <= $wallMaxX; $x++) {
+                for ($y = $wall->initY; $y <= $wallMaxY; $y++) {
+                    $wallCoordinates = $x . ':' . $y;
+                    if (isset($this->coordinates[$wallCoordinates])) {
+                        $collision = true;
+                        break;
+                    }
                 }
             }
-            $collisionY = false;
-            for ($x = $wall->initY; $x <= $wall->initY + Wall::SIZE_Y; $x++) {
-                if ($x === $this->y) {
-                    $collisionY = true;
-                    break;
-                }
-            }
-            if ($collisionX || $collisionY) {
+
+            if ($collision) {
                 return true;
             }
         }
 
         return false;
+    }
+
+    public function setBlockMatrix(): void
+    {
+        $blockMaxX = $this->x + $this->sizeX;
+        $blockMaxY = $this->y + $this->sizeY;
+        for ($bx = $this->x; $bx <= $blockMaxX; $bx++) {
+            for ($by = $this->y; $by <= $blockMaxY; $by++) {
+                $this->coordinates[$bx . ':' . $by] = true;
+            }
+        }
     }
 }
