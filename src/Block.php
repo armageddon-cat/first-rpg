@@ -25,6 +25,18 @@ class Block
         return !$this->isWall();
     }
 
+    public function hasMob(): bool
+    {
+        $mob = Map::getInstance()->mobs;
+        if (empty($mob)) {
+            return false;
+        }
+        if ($mob->x === $this->x && $mob->y === $this->y) {
+            return true;
+        }
+        return false;
+    }
+
     private function isWall(): bool
     {
         // todo optimize

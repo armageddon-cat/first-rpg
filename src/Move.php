@@ -43,6 +43,13 @@ class Move
         $this->block->x = $this->x;
         $this->block->y = $this->y;
 
-        return $this->block->isFree();
+        $isFreeBlock = $this->block->isFree();
+        $hasMob = $this->block->hasMob();
+        if ($hasMob) {
+            $mob = Map::getInstance()->mobs;
+            $mob->addDamage();
+        }
+
+        return $isFreeBlock && !$hasMob;
     }
 }

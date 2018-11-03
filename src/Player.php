@@ -5,16 +5,8 @@ namespace app;
 
 use app\base\Canvas;
 
-class Player
+class Player extends Entity
 {
-    public $type;
-    public $x;
-    public $y;
-
-    public const SIZE_X = 20;
-    public const SIZE_Y = 20;
-    public const OFFSET = 1;
-
     /**
      * Player constructor.
      * @throws \Exception
@@ -25,8 +17,8 @@ class Player
         $middle = Canvas::CANVAS_SIZE / 2;
 //        $initWallCoordinateX = $middle - ((Wall::OFFSET + Player::SIZE_X + Wall::OFFSET + Wall::SIZE_X) /2);
         $initWallCoordinateX = $middle;
-        $x = $initWallCoordinateX + Wall::SIZE_X + Wall::OFFSET + self::OFFSET;
-        $y = Canvas::CANVAS_SIZE - Player::SIZE_Y- Player::OFFSET;
+        $x = $initWallCoordinateX + Wall::SIZE_X + Player::OFFSET;
+        $y = Canvas::CANVAS_SIZE - Player::SIZE_Y - Player::OFFSET;
         $block = new Block($x, $y, self::SIZE_X, self::SIZE_Y);
 //        $block->isFree();
 //        while (!$block->isFree()) {

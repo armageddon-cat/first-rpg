@@ -42,7 +42,7 @@ class WallGenerator
     /**
      * @throws \Exception
      */
-    public function generateWalls(): void
+    public function generate(): void
     {
 
         $direction = self::DIRECTION_UP; // default
@@ -50,20 +50,25 @@ class WallGenerator
         $middle = Canvas::CANVAS_SIZE / 2;
         $wallReg = WallRegistry::getInstance();
         $wallReg::unsetRegistry();
+        $path = Map::getInstance()->path;
 
         // left side wall chunk
         $initWallCoordinateX = $middle; // todo make chunk class
         $initWallCoordinateY = Canvas::CANVAS_SIZE - Wall::SIZE_Y - Player::OFFSET;
-        $wall = new Wall($initWallCoordinateX, $initWallCoordinateY);
+        $wall = new Wall($initWallCoordinateX, $initWallCoordinateY); // todo mayby make left and right class wall
         $wallReg::add($wall);
         for ($i=0;$i<2;$i++) {
             $initWallCoordinateY=$initWallCoordinateY-Wall::SIZE_Y- Wall::OFFSET;
             $wall = new Wall($initWallCoordinateX, $initWallCoordinateY);
             $wallReg::add($wall);
+            $freeBlockX = $initWallCoordinateX + Wall::SIZE_X + Player::OFFSET;
+            $freeBlockY = $initWallCoordinateY;
+            $freeBlock = new Block($freeBlockX, $freeBlockY, Wall::SIZE_X, Wall::SIZE_Y);
+            $path->addFreeBlocks(($freeBlock));
         }
         $lastLeftWall = $wall;
         // right side wall chunk
-        $initWallCoordinateX = $middle + Wall::OFFSET + Player::SIZE_X + Wall::OFFSET + Wall::SIZE_X + Player::OFFSET * 2;
+        $initWallCoordinateX = $middle + Wall::SIZE_X + Player::OFFSET + Player::SIZE_X + Player::OFFSET;
         $initWallCoordinateY = Canvas::CANVAS_SIZE - Wall::SIZE_Y - Player::OFFSET;
         $wall = new Wall($initWallCoordinateX, $initWallCoordinateY);
         $wallReg::add($wall);
@@ -122,6 +127,10 @@ class WallGenerator
                     for ($i=0;$i<4;$i++) {
                         $wall = new Wall($initWallCoordinateX, $initWallCoordinateY);
                         $wallReg::add($wall);
+                        $freeBlockX = $initWallCoordinateX;
+                        $freeBlockY = $initWallCoordinateY + Wall::SIZE_Y + Player::OFFSET;
+                        $freeBlock = new Block($freeBlockX, $freeBlockY, Wall::SIZE_X, Wall::SIZE_Y);
+                        $path->addFreeBlocks(($freeBlock));
                         $initWallCoordinateX = ($initWallCoordinateX-Wall::SIZE_X- Wall::OFFSET);
                     }
                     $lastRightWall = $wall;
@@ -156,6 +165,10 @@ class WallGenerator
                     for ($i=0;$i<4;$i++) {
                         $wall = new Wall($initWallCoordinateX, $initWallCoordinateY);
                         $wallReg::add($wall);
+                        $freeBlockX = $initWallCoordinateX;
+                        $freeBlockY = $initWallCoordinateY + Wall::SIZE_Y + Player::OFFSET;
+                        $freeBlock = new Block($freeBlockX, $freeBlockY, Wall::SIZE_X, Wall::SIZE_Y);
+                        $path->addFreeBlocks(($freeBlock));
                         $initWallCoordinateX = ($initWallCoordinateX+Wall::SIZE_X+ Wall::OFFSET);
                     }
                     $lastLeftWall = $wall;
@@ -193,6 +206,10 @@ class WallGenerator
                     for ($i=0;$i<4;$i++) {
                         $wall = new Wall($initWallCoordinateX, $initWallCoordinateY);
                         $wallReg::add($wall);
+                        $freeBlockX = $initWallCoordinateX + Wall::SIZE_X + Player::OFFSET;
+                        $freeBlockY = $initWallCoordinateY;
+                        $freeBlock = new Block($freeBlockX, $freeBlockY, Wall::SIZE_X, Wall::SIZE_Y);
+                        $path->addFreeBlocks(($freeBlock));
                         $initWallCoordinateY = ($initWallCoordinateY-Wall::SIZE_Y- Wall::OFFSET);
                     }
                     $lastLeftWall = $wall;
@@ -230,6 +247,10 @@ class WallGenerator
                     for ($i=0;$i<4;$i++) {
                         $wall = new Wall($initWallCoordinateX, $initWallCoordinateY);
                         $wallReg::add($wall);
+                        $freeBlockX = $initWallCoordinateX - Wall::SIZE_X - Player::OFFSET;
+                        $freeBlockY = $initWallCoordinateY;
+                        $freeBlock = new Block($freeBlockX, $freeBlockY, Wall::SIZE_X, Wall::SIZE_Y);
+                        $path->addFreeBlocks(($freeBlock));
                         $initWallCoordinateY = ($initWallCoordinateY-Wall::SIZE_Y- Wall::OFFSET);
                     }
                     $lastRightWall = $wall;

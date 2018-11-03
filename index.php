@@ -12,8 +12,12 @@
     <script>
         var wall = new Image;
         var player = new Image;
+        var mobJaws = new Image;
+
+
         wall.src = 'src/img/wall.jpg';
         player.src = 'src/img/player.jpg';
+
 
         CANVAS_SIZE = 800;
         CANVAS_START = 0;
@@ -69,6 +73,23 @@
             walls.forEach(function(item) {
                 canvasContext.drawImage(wall, item.x, item.y);
             });
+            if (typeof mapData.mobs !== typeof undefined) {
+                // this part is needed for preloading images instead of onload event which slows down image rendering and
+                // makes images to blink all the time.
+                var mobJaws1 = new Image;
+                var mobJaws2 = new Image;
+                var mobJaws3 = new Image;
+                mobJaws1.src = 'src/img/mob_jaws.jpg';
+                mobJaws2.src = 'src/img/mob_jaws_half.jpg';
+                mobJaws3.src = 'src/img/mob_jaws_last.jpg';
+                var mobs = mapData.mobs;
+
+                mobs.forEach(function(itemMobs) {
+                    mobJaws.src = itemMobs.hpSrc;
+                    canvasContext.drawImage(mobJaws, itemMobs.x, itemMobs.y);
+                });
+            }
+
             canvasContext.drawImage(player, mapData.player.x, mapData.player.y);
         };
     </script>
