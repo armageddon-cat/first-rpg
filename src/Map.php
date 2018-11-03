@@ -37,11 +37,9 @@ class Map
      */
     private function generateWalls(): void
     {
+        $wallGenerator = new WallGenerator();
+        $wallGenerator->generateWalls();
         $this->walls = WallRegistry::getInstance();
-        for ($i = 0;$i < 50;$i++) {
-            $wall = new Wall();
-            $this->walls::add($wall);
-        }
     }
 
     /**

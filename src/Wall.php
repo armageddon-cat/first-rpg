@@ -12,15 +12,16 @@ class Wall
 
     public const SIZE_X = 20;
     public const SIZE_Y = 20;
+    public const OFFSET = 1;
 
     /**
      * Wall constructor.
      * @throws \Exception
      */
-    public function __construct()
+    public function __construct($x, $y)
     {
         // todo check if coordinates empty
-        $this->initX = random_int(Canvas::CANVAS_START, Canvas::CANVAS_SIZE-self::SIZE_X);
-        $this->initY = random_int(Canvas::CANVAS_START, Canvas::CANVAS_SIZE-self::SIZE_Y);
+        $this->initX = $x;
+        $this->initY = $y;
     }
 }

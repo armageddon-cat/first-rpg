@@ -12,6 +12,7 @@ class Move
     public $y;
     /** @var Block */
     public $block;
+    private const MOVE_SIZE = 21;
 
     public function __construct(ClientMessageContainer $container, Block $block)
     {
@@ -25,16 +26,16 @@ class Move
     {
         switch ($this->direction) {
             case Canvas::CODE_RIGHT_ARROW:
-                $this->x += 20;
+                $this->x += self::MOVE_SIZE;
                 break;
             case Canvas::CODE_LEFT_ARROW:
-                $this->x -= 20;
+                $this->x -= self::MOVE_SIZE;
                 break;
             case Canvas::CODE_UP_ARROW:
-                $this->y -= 20;
+                $this->y -= self::MOVE_SIZE;
                 break;
             case Canvas::CODE_DOWN_ARROW:
-                $this->y += 20;
+                $this->y += self::MOVE_SIZE;
                 break;
             default:
                 break; // todo exceptional case. maybe some work here in future

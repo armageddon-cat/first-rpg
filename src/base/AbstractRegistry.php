@@ -26,7 +26,7 @@ abstract class AbstractRegistry extends \ArrayIterator
     
     public static function add($point): void
     {
-        static::getInstance()->offsetSet($point->initX . $point->initX, $point); // todo refactor this all shit
+        static::getInstance()->offsetSet($point->initX . $point->initY, $point); // todo refactor this all shit
     }
         
     public static function exists(string $id): bool
