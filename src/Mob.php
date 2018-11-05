@@ -17,7 +17,7 @@ class Mob extends Entity
     public function __construct()
     {
         $path = Map::getInstance()->path;
-        foreach ($path->freeBlock as $pathBlock) {
+        foreach ($path->freeBlock as $pathBlockKey => $pathBlock) {
             $isStop = random_int(2, 12);
             if ($isStop === 2) {
                 break;
@@ -34,6 +34,24 @@ class Mob extends Entity
         $this->type = new MobJaws(); // todo make customisable
         $this->hp = self::FULL_HP;
         $this->hpSrc = 'src/img/mob_jaws.jpg';
+
+        $views = Map::getInstance()->path->views;
+        $viewMob = $views[$this->x . ':' . $this->y];
+
+        // todo some error on cacl
+        if ($pathBlockKey%3 === 0) {
+            $viewMob->mobView->mobVisibleBlocks[] = $path->freeBlock[$pathBlockKey-1];
+            $viewMob->mobView->mobVisibleBlocks[] = $path->freeBlock[$pathBlockKey-2];
+            $viewMob->mobView->mobVisibleBlocks[] = $path->freeBlock[$pathBlockKey-3];
+        }
+        if ($pathBlockKey%3 === 1) {
+            $viewMob->mobView->mobVisibleBlocks[] = $path->freeBlock[$pathBlockKey-1];
+            $viewMob->mobView->mobVisibleBlocks[] = $path->freeBlock[$pathBlockKey-2];
+        }
+        if ($pathBlockKey%3 === 2) {
+            $viewMob->mobView->mobVisibleBlocks[] = $path->freeBlock[$pathBlockKey-1];
+        }
+
     }
 
     public function addDamage(): void

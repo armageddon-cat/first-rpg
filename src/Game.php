@@ -56,7 +56,17 @@ class Game
         $result['gameView'] = ['x' => $view->view->initX, 'y' => $view->view->initY, 'src' => $view->view->src];
         if (!empty($map->mobs)) {
             $result['mobs'][] = ['x' => $map->mobs->x, 'y' => $map->mobs->y, 'src' => $map->mobs->hpSrc]; // todo now one. in future maybe more
+            /** @var View $viewMob */
+            $viewMob = $views[$map->mobs->x . ':' . $map->mobs->y];
+            foreach ($viewMob->mobView->mobVisibleBlocks as $mobVisibleBlocks) {
+                if ($mobVisibleBlocks->x === $map->player->x && $mobVisibleBlocks->y === $map->player->y) {
+                    $result['mobsView'][] = ['x' => $viewMob->mobView->initX, 'y' => $viewMob->mobView->initY, 'src' => $viewMob->mobView->src];
+                    break;
+                }
+            }
+
         }
+
         return json_encode($result);
     }
 }

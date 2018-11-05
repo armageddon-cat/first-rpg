@@ -3,18 +3,21 @@ declare(strict_types=1);
 
 namespace app;
 
-class MobView
+class MobView extends View
 {
     public $src;
+    public $mobVisibleBlocks = [];
 
-    public function __construct($direction)
+    public function __construct(int $viewType)
     {
-        if ($direction === Canvas::CODE_RIGHT_ARROW) {
-            $this->src = 'src/img/hallview_full_right.png';
+        if ($viewType === View::FULL_VIEW) {
+            $this->src = 'src/img/mob3dFull.png';
         }
-
-        if ($direction === Canvas::CODE_LEFT_ARROW) {
-            $this->src = 'src/img/hallview_full_left.png';
+        if ($viewType === View::HALF_VIEW) {
+            $this->src = 'src/img/mob3dMedium.png';
+        }
+        if ($viewType === View::END_VIEW) {
+            $this->src = 'src/img/mob3dSmall.png';
         }
     }
 }

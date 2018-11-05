@@ -27,6 +27,6 @@ class Path
 
     public function addViews(Block $block, int $viewType, int $direction, int $nextDirection): void
     {
-        $this->views[$block->x . ':' . $block->y] = new View($viewType, $direction, $nextDirection);
+        $this->views[$block->x . ':' . $block->y] = new View($viewType, $direction, $nextDirection, $block);
     }
 }

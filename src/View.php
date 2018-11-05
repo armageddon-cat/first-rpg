@@ -9,6 +9,7 @@ class View
      * @var FullView | HalfView | FullView
      */
     public $view;
+    public $mobView;
 
     public $initX = self::DEFAULT_INIT_X;
     public $initY = self::DEFAULT_INIT_Y;
@@ -26,7 +27,7 @@ class View
         self::END_VIEW,
     ];
 
-    public function __construct(int $viewType, int $direction, int $nextDirection)
+    public function __construct(int $viewType, int $direction, int $nextDirection, Block $block)
     {
         if ($viewType === self::FULL_VIEW) {
             $this->view = new FullView($direction, $nextDirection);
@@ -37,5 +38,6 @@ class View
         if ($viewType === self::END_VIEW) {
             $this->view = new EndView($direction, $nextDirection);
         }
+        $this->mobView = new MobView($viewType, $block);
     }
 }
