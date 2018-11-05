@@ -7,6 +7,7 @@ use app\base\Canvas;
 
 class Player extends Entity
 {
+    public $view;
     /**
      * Player constructor.
      * @throws \Exception
@@ -28,13 +29,28 @@ class Player extends Entity
 //        }
         $this->x = $block->x;
         $this->y = $block->y;
+        $this->view = new View(View::FULL_VIEW);
+        $path = Map::getInstance()->path;
+        $path->playerPosition = $block;
+        $path->addViews($block, View::FULL_VIEW);
+
         $this->type = new Fighter(); // todo make customisable
     }
 
-    public function makeMove(Move $move)
+    public function makeMove(Move $move): void
     {
         // todo maybe check here
+        $freeBlock = new Block($this->x, $this->y, self::SIZE_X, self::SIZE_Y);
+        $path = Map::getInstance()->path;
+        $path->addFreeBlocks($freeBlock);
+
         $this->x = $move->x;
         $this->y = $move->y;
+
+        $block = new Block($this->x, $this->y, self::SIZE_X, self::SIZE_Y);
+        $path = Map::getInstance()->path;
+        $path->unsetFreeBlock($block);
+
+        $path->playerPosition = $block;
     }
 }

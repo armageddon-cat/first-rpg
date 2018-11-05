@@ -7,7 +7,9 @@ use app\base\Canvas;
 
 class WallGenerator
 {
-    private const MIN_WALL_LENGTH = 3;
+    private const WALL_STRAIGHT_LENGTH = 3;
+    private const WALL_TURN_STRAIGHT_LENGTH = 2;
+    private const WALL_TURN_TURN_LENGTH = 1;
     private const DIRECTION_LEFT = 2;
     private const DIRECTION_UP = 1;
     private const DIRECTION_RIGHT = 3;
@@ -55,16 +57,17 @@ class WallGenerator
         // left side wall chunk
         $initWallCoordinateX = $middle; // todo make chunk class
         $initWallCoordinateY = Canvas::CANVAS_SIZE - Wall::SIZE_Y - Player::OFFSET;
-        $wall = new Wall($initWallCoordinateX, $initWallCoordinateY); // todo mayby make left and right class wall
+        $wall = new Wall($initWallCoordinateX, $initWallCoordinateY); // todo maybe make left and right class wall
         $wallReg::add($wall);
-        for ($i=0;$i<2;$i++) {
+        for ($i=1;$i<self::WALL_STRAIGHT_LENGTH;$i++) {
             $initWallCoordinateY=$initWallCoordinateY-Wall::SIZE_Y- Wall::OFFSET;
             $wall = new Wall($initWallCoordinateX, $initWallCoordinateY);
             $wallReg::add($wall);
             $freeBlockX = $initWallCoordinateX + Wall::SIZE_X + Player::OFFSET;
             $freeBlockY = $initWallCoordinateY;
             $freeBlock = new Block($freeBlockX, $freeBlockY, Wall::SIZE_X, Wall::SIZE_Y);
-            $path->addFreeBlocks(($freeBlock));
+            $path->addFreeBlocks($freeBlock);
+            $path->addViews($freeBlock, View::VIEWS[$i]);
         }
         $lastLeftWall = $wall;
         // right side wall chunk
@@ -72,7 +75,7 @@ class WallGenerator
         $initWallCoordinateY = Canvas::CANVAS_SIZE - Wall::SIZE_Y - Player::OFFSET;
         $wall = new Wall($initWallCoordinateX, $initWallCoordinateY);
         $wallReg::add($wall);
-        for ($i=0;$i<2;$i++) {
+        for ($i=1;$i<self::WALL_STRAIGHT_LENGTH;$i++) {
             $initWallCoordinateY=$initWallCoordinateY-Wall::SIZE_Y- Wall::OFFSET;
             $wall = new Wall($initWallCoordinateX, $initWallCoordinateY);
             $wallReg::add($wall);
@@ -86,36 +89,11 @@ class WallGenerator
              }
 
             if ($previousDirection === self::DIRECTION_UP) {
-                // todo in simple case this cannot happen. but already coded this, so keep it for future
-                if ($direction === self::DIRECTION_UP) {
-                    // left side wall chunk
-                    $initWallCoordinateX = $lastLeftWall->initX;
-                    $initWallCoordinateY = $lastLeftWall->initY - Wall::SIZE_Y;
-                    for ($i=0;$i<self::MIN_WALL_LENGTH;$i++) {
-                        $wall = new Wall($initWallCoordinateX, $initWallCoordinateY);
-                        $wallReg::add($wall);
-                        $initWallCoordinateY -= Wall::SIZE_Y;
-                    }
-                    $lastLeftWall = $wall;
-                    // right side wall chunk
-                    $initWallCoordinateX = $lastRightWall->initX;
-                    $initWallCoordinateY = $lastRightWall->initY - Wall::SIZE_Y;
-                    for ($i=0;$i<self::MIN_WALL_LENGTH;$i++) {
-                        $wall = new Wall($initWallCoordinateX, $initWallCoordinateY);
-                        $wallReg::add($wall);
-                        $initWallCoordinateY -= Wall::SIZE_Y;
-                    }
-                    $lastRightWall = $wall;
-                    $previousDirection = $direction; // todo make this chunk property
-                    $noDown = true;
-                    continue;
-                }
-
                 if ($direction === self::DIRECTION_LEFT) {
                     // right side wall chunk
                     $initWallCoordinateX = $lastRightWall->initX;
                     $initWallCoordinateY = $lastRightWall->initY - Wall::SIZE_Y - (1 * Wall::OFFSET);
-                    for ($i=0;$i<2;$i++) {
+                    for ($i=0;$i<self::WALL_TURN_STRAIGHT_LENGTH;$i++) {
                         $wall = new Wall($initWallCoordinateX, $initWallCoordinateY);
                         $wallReg::add($wall);
                         $initWallCoordinateY = ($initWallCoordinateY-Wall::SIZE_Y- Wall::OFFSET);
@@ -124,20 +102,21 @@ class WallGenerator
                     // top wall chunk
                     $initWallCoordinateX = $lastRightWall->initX - Wall::SIZE_X - (1 * Wall::OFFSET); // compensate offset
                     $initWallCoordinateY = $lastRightWall->initY;
-                    for ($i=0;$i<4;$i++) {
+                    for ($i=0;$i<self::WALL_STRAIGHT_LENGTH;$i++) {
                         $wall = new Wall($initWallCoordinateX, $initWallCoordinateY);
                         $wallReg::add($wall);
                         $freeBlockX = $initWallCoordinateX;
                         $freeBlockY = $initWallCoordinateY + Wall::SIZE_Y + Player::OFFSET;
                         $freeBlock = new Block($freeBlockX, $freeBlockY, Wall::SIZE_X, Wall::SIZE_Y);
-                        $path->addFreeBlocks(($freeBlock));
+                        $path->addFreeBlocks($freeBlock);
+                        $path->addViews($freeBlock, View::VIEWS[$i]);
                         $initWallCoordinateX = ($initWallCoordinateX-Wall::SIZE_X- Wall::OFFSET);
                     }
                     $lastRightWall = $wall;
-                    // left side wall chunk
+                    // bottom side wall chunk
                     $initWallCoordinateX = $lastLeftWall->initX - Wall::SIZE_X- Wall::OFFSET;
                     $initWallCoordinateY = $lastLeftWall->initY;
-                    for ($i=0;$i<2;$i++) {
+                    for ($i=0;$i<self::WALL_TURN_TURN_LENGTH;$i++) {
                         $wall = new Wall($initWallCoordinateX, $initWallCoordinateY);
                         $wallReg::add($wall);
                         $initWallCoordinateX = ($initWallCoordinateX-Wall::SIZE_X- Wall::OFFSET);
@@ -153,7 +132,7 @@ class WallGenerator
                     // left side wall chunk
                     $initWallCoordinateX = $lastLeftWall->initX;
                     $initWallCoordinateY = $lastLeftWall->initY - Wall::SIZE_Y - (1 * Wall::OFFSET);
-                    for ($i=0;$i<2;$i++) {
+                    for ($i=0;$i<self::WALL_TURN_STRAIGHT_LENGTH;$i++) {
                         $wall = new Wall($initWallCoordinateX, $initWallCoordinateY);
                         $wallReg::add($wall);
                         $initWallCoordinateY = ($initWallCoordinateY-Wall::SIZE_Y- Wall::OFFSET);
@@ -162,20 +141,21 @@ class WallGenerator
                     // top wall chunk
                     $initWallCoordinateX = $lastLeftWall->initX + Wall::SIZE_X + (1 * Wall::OFFSET); // compensate offset
                     $initWallCoordinateY = $lastLeftWall->initY;
-                    for ($i=0;$i<4;$i++) {
+                    for ($i=0;$i<self::WALL_STRAIGHT_LENGTH;$i++) {
                         $wall = new Wall($initWallCoordinateX, $initWallCoordinateY);
                         $wallReg::add($wall);
                         $freeBlockX = $initWallCoordinateX;
                         $freeBlockY = $initWallCoordinateY + Wall::SIZE_Y + Player::OFFSET;
                         $freeBlock = new Block($freeBlockX, $freeBlockY, Wall::SIZE_X, Wall::SIZE_Y);
-                        $path->addFreeBlocks(($freeBlock));
+                        $path->addFreeBlocks($freeBlock);
+                        $path->addViews($freeBlock, View::VIEWS[$i]);
                         $initWallCoordinateX = ($initWallCoordinateX+Wall::SIZE_X+ Wall::OFFSET);
                     }
                     $lastLeftWall = $wall;
                     // bottom wall chunk
                     $initWallCoordinateX = $lastRightWall->initX + Wall::SIZE_X+ Wall::OFFSET;
                     $initWallCoordinateY = $lastRightWall->initY;
-                    for ($i=0;$i<2;$i++) {
+                    for ($i=0;$i<self::WALL_TURN_TURN_LENGTH;$i++) {
                         $wall = new Wall($initWallCoordinateX, $initWallCoordinateY);
                         $wallReg::add($wall);
                         $initWallCoordinateX = ($initWallCoordinateX+Wall::SIZE_X+ Wall::OFFSET); // todo make method with name
@@ -194,7 +174,7 @@ class WallGenerator
                     // bottom wall chunk
                     $initWallCoordinateX = $lastLeftWall->initX - Wall::SIZE_X - (1 * Wall::OFFSET) ; // compensate previous offset
                     $initWallCoordinateY = $lastLeftWall->initY;
-                    for ($i=0;$i<2;$i++) {
+                    for ($i=0;$i<self::WALL_TURN_STRAIGHT_LENGTH;$i++) {
                         $wall = new Wall($initWallCoordinateX, $initWallCoordinateY);
                         $wallReg::add($wall);
                         $initWallCoordinateX = ($initWallCoordinateX-Wall::SIZE_X- Wall::OFFSET);
@@ -203,20 +183,21 @@ class WallGenerator
                     // left side wall chunk
                     $initWallCoordinateX = $lastLeftWall->initX;
                     $initWallCoordinateY = $lastLeftWall->initY - Wall::SIZE_Y - (1 * Wall::OFFSET); // todo forget to save last wall
-                    for ($i=0;$i<4;$i++) {
+                    for ($i=0;$i<self::WALL_STRAIGHT_LENGTH;$i++) {
                         $wall = new Wall($initWallCoordinateX, $initWallCoordinateY);
                         $wallReg::add($wall);
                         $freeBlockX = $initWallCoordinateX + Wall::SIZE_X + Player::OFFSET;
                         $freeBlockY = $initWallCoordinateY;
                         $freeBlock = new Block($freeBlockX, $freeBlockY, Wall::SIZE_X, Wall::SIZE_Y);
-                        $path->addFreeBlocks(($freeBlock));
+                        $path->addFreeBlocks($freeBlock);
+                        $path->addViews($freeBlock, View::VIEWS[$i]);
                         $initWallCoordinateY = ($initWallCoordinateY-Wall::SIZE_Y- Wall::OFFSET);
                     }
                     $lastLeftWall = $wall;
                     // right wall chunk
                     $initWallCoordinateX = $lastRightWall->initX;
                     $initWallCoordinateY = $lastRightWall->initY - Wall::SIZE_Y- Wall::OFFSET;
-                    for ($i=0;$i<2;$i++) {
+                    for ($i=0;$i<self::WALL_TURN_TURN_LENGTH;$i++) {
                         $wall = new Wall($initWallCoordinateX, $initWallCoordinateY);
                         $wallReg::add($wall);
                         $initWallCoordinateY = ($initWallCoordinateY-Wall::SIZE_Y- Wall::OFFSET);
@@ -235,7 +216,7 @@ class WallGenerator
                     // bottom wall chunk
                     $initWallCoordinateX = $lastRightWall->initX + Wall::SIZE_X + (1 * Wall::OFFSET) ; // compensate previous offset
                     $initWallCoordinateY = $lastRightWall->initY;
-                    for ($i=0;$i<2;$i++) {
+                    for ($i=0;$i<self::WALL_TURN_STRAIGHT_LENGTH;$i++) {
                         $wall = new Wall($initWallCoordinateX, $initWallCoordinateY);
                         $wallReg::add($wall);
                         $initWallCoordinateX = ($initWallCoordinateX+Wall::SIZE_X+ Wall::OFFSET);
@@ -244,20 +225,21 @@ class WallGenerator
                     // right wall chunk
                     $initWallCoordinateX = $lastRightWall->initX;
                     $initWallCoordinateY = $lastRightWall->initY - Wall::SIZE_Y - (1* Wall::OFFSET);
-                    for ($i=0;$i<4;$i++) {
+                    for ($i=0;$i<self::WALL_STRAIGHT_LENGTH;$i++) {
                         $wall = new Wall($initWallCoordinateX, $initWallCoordinateY);
                         $wallReg::add($wall);
                         $freeBlockX = $initWallCoordinateX - Wall::SIZE_X - Player::OFFSET;
                         $freeBlockY = $initWallCoordinateY;
                         $freeBlock = new Block($freeBlockX, $freeBlockY, Wall::SIZE_X, Wall::SIZE_Y);
-                        $path->addFreeBlocks(($freeBlock));
+                        $path->addFreeBlocks($freeBlock);
+                        $path->addViews($freeBlock, View::VIEWS[$i]);
                         $initWallCoordinateY = ($initWallCoordinateY-Wall::SIZE_Y- Wall::OFFSET);
                     }
                     $lastRightWall = $wall;
                     // left side wall chunk
                     $initWallCoordinateX = $lastLeftWall->initX;
                     $initWallCoordinateY = $lastLeftWall->initY - Wall::SIZE_Y -  Wall::OFFSET; // todo forget to save last wall
-                    for ($i=0;$i<2;$i++) {
+                    for ($i=0;$i<self::WALL_TURN_TURN_LENGTH;$i++) {
                         $wall = new Wall($initWallCoordinateX, $initWallCoordinateY);
                         $wallReg::add($wall);
                         $initWallCoordinateY = ($initWallCoordinateY-Wall::SIZE_Y- Wall::OFFSET);

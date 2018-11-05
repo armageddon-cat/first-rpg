@@ -21,8 +21,8 @@ class ServerActions
     public static function onOpen($connect): void
     {
         var_dump('connection opened');
-        $map = new Map();
-        $string = $map->prepareJsonToClient();
+        $game = new Game();
+        $string = $game->prepareJsonToClient();
 //        var_dump($string);
         fwrite($connect, WebSocket::encode($string));
     }
@@ -56,7 +56,8 @@ class ServerActions
             return;
         }
 
-        $map = Map::getInstance();
+        $game = Game::getInstance();
+        $map = $game->map;
 
         $block = new Block($map->player->x, $map->player->y, $map->player::SIZE_X, $map->player::SIZE_Y);
         $move = new Move($message, $block);
@@ -73,7 +74,7 @@ class ServerActions
 //        BulletRegistry::moveBullets();
 //        // now we can send result back
 //        $storage = TankRegistry::getStorageJSON();
-        $string = $map->prepareJsonToClient();
+        $string = $game->prepareJsonToClient();
         fwrite($connect, WebSocket::encode($string));
     }
 }

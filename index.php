@@ -8,7 +8,8 @@
     <title>Game</title>
 </head>
 <body>
-    <canvas id="canvas" width="800" height="800" style="border: 1px solid;"></canvas>
+    <canvas id="canvas_view" width="800" height="800" style="border: 1px solid"></canvas>
+    <canvas id="canvas" width="800" height="800" style="border: 1px solid;width: 200px;height: 200px"></canvas>
     <script>
         var wall = new Image;
         var player = new Image;
@@ -50,6 +51,10 @@
         var canvas = document.getElementById('canvas');
         var canvasContext = canvas.getContext('2d');
         canvasContext.save();
+
+        var canvas3D = document.getElementById('canvas_view');
+        var canvasContext3D = canvas3D.getContext('2d');
+        canvasContext3D.save();
         // setInterval(function () {
         //     if (buffer != '') {
         //         socket.send(buffer);
@@ -69,6 +74,7 @@
             var mapData = JSON.parse(event.data);
             console.log(mapData); // TODO remove debug!!
             canvasContext.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+            canvasContext3D.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
             var walls = mapData.walls;
             walls.forEach(function(item) {
                 canvasContext.drawImage(wall, item.x, item.y);
@@ -76,21 +82,50 @@
             if (typeof mapData.mobs !== typeof undefined) {
                 // this part is needed for preloading images instead of onload event which slows down image rendering and
                 // makes images to blink all the time.
-                var mobJaws1 = new Image;
-                var mobJaws2 = new Image;
-                var mobJaws3 = new Image;
-                mobJaws1.src = 'src/img/mob_jaws.jpg';
-                mobJaws2.src = 'src/img/mob_jaws_half.jpg';
-                mobJaws3.src = 'src/img/mob_jaws_last.jpg';
+                var mobJaws1 = new Image; // preloading
+                var mobJaws2 = new Image; // preloading
+                var mobJaws3 = new Image; // preloading
+                mobJaws1.src = 'src/img/mob_jaws.jpg'; // preloading
+                mobJaws2.src = 'src/img/mob_jaws_half.jpg'; // preloading
+                mobJaws3.src = 'src/img/mob_jaws_last.jpg'; // preloading
                 var mobs = mapData.mobs;
 
                 mobs.forEach(function(itemMobs) {
-                    mobJaws.src = itemMobs.hpSrc;
+                    mobJaws.src = itemMobs.src;
                     canvasContext.drawImage(mobJaws, itemMobs.x, itemMobs.y);
                 });
             }
 
             canvasContext.drawImage(player, mapData.player.x, mapData.player.y);
+
+            var viewPreloading1 = new Image;// preloading
+            var viewPreloading2 = new Image;// preloading
+            var viewPreloading3 = new Image;// preloading
+
+            viewPreloading1.src = 'src/img/hallview_full.png'; // preloading
+            viewPreloading2.src = 'src/img/hallview_half.png'; // preloading
+            viewPreloading3.src= 'src/img/hallview_end.png'; // preloading
+
+            if(mapData.gameView.src === 'src/img/hallview_full.png') { // todo change this shit
+                viewPreloading1.onload = function() {
+                    canvasContext3D.drawImage(viewPreloading1, mapData.gameView.x, mapData.gameView.y);
+                };
+                canvasContext3D.drawImage(viewPreloading1, mapData.gameView.x, mapData.gameView.y);
+            }
+            if(mapData.gameView.src === 'src/img/hallview_half.png') {
+                viewPreloading2.onload = function() {
+                    canvasContext3D.drawImage(viewPreloading2, mapData.gameView.x, mapData.gameView.y);
+                };
+                canvasContext3D.drawImage(viewPreloading2, mapData.gameView.x, mapData.gameView.y);
+            }
+            if(mapData.gameView.src === 'src/img/hallview_end.png') {
+                viewPreloading3.onload = function() {
+                    canvasContext3D.drawImage(viewPreloading3, mapData.gameView.x, mapData.gameView.y);
+                };
+                canvasContext3D.drawImage(viewPreloading3, mapData.gameView.x, mapData.gameView.y);
+            }
+
+
         };
     </script>
 </body>

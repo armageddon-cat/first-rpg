@@ -5,8 +5,17 @@ namespace app;
 
 class Map
 {
+    /**
+     * @var WallRegistry
+     */
     public $walls;
+    /**
+     * @var Path
+     */
     public $path;
+    /**
+     * @var Mob
+     */
     public $mobs;
     /**
      * @var Player
@@ -61,25 +70,12 @@ class Map
     {
         $this->path = new Path();
     }
+
+    /**
+     * @throws \Exception
+     */
     private function generateMobs(): void
     {
         $this->mobs = new Mob();
-    }
-
-    public function prepareJsonToClient(): string
-    {
-        $result = [];
-        foreach ($this->walls as $wall) {
-            $result['walls'][] = ['x' => $wall->initX, 'y' => $wall->initY];
-        }
-        // dont need it on front
-//        foreach ($this->path->freeBlock as $path) {
-//            $result['path'][] = ['x' => $path->x, 'y' => $path->y];
-//        }
-        $result['player'] = ['x' => $this->player->x, 'y' => $this->player->y];
-        if (!empty($this->mobs)) {
-            $result['mobs'][] = ['x' => $this->mobs->x, 'y' => $this->mobs->y, 'hpSrc' => $this->mobs->hpSrc]; // todo now one. in future maybe more
-        }
-        return json_encode($result);
     }
 }

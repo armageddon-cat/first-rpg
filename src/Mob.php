@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace app;
 
-class Mob
+class Mob extends Entity
 {
     public $hp;
     public $hpSrc;
@@ -23,6 +23,12 @@ class Mob
                 break;
             }
         }
+        $path = Map::getInstance()->path;
+        $path->mobsPosition = $pathBlock;
+
+        $path = Map::getInstance()->path;
+        $path->unsetFreeBlock($pathBlock);
+
         $this->x = $pathBlock->x;
         $this->y = $pathBlock->y;
         $this->type = new MobJaws(); // todo make customisable
@@ -30,12 +36,15 @@ class Mob
         $this->hpSrc = 'src/img/mob_jaws.jpg';
     }
 
-    public function addDamage()
+    public function addDamage(): void
     {
         if ($this->hp > 0) {
             $this->hp = $this->hp - 1;
             if ($this->hp === 0) {
                 Map::getInstance()->mobs = null;
+                $freeBlock = new Block($this->x, $this->y, self::SIZE_X, self::SIZE_Y);
+                $path = Map::getInstance()->path;
+                $path->addFreeBlocks($freeBlock);
             }
             if ($this->hp === self::HALF_HP) {
                 $this->hpSrc = 'src/img/mob_jaws_half.jpg';
