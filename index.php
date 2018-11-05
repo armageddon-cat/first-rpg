@@ -93,6 +93,9 @@
                 mobs.forEach(function(itemMobs) {
                     mobJaws.src = itemMobs.src;
                     canvasContext.drawImage(mobJaws, itemMobs.x, itemMobs.y);
+                    mobJaws.onload = function() {
+                        canvasContext.drawImage(mobJaws, itemMobs.x, itemMobs.y);
+                    };
                 });
             }
 
@@ -108,11 +111,11 @@
 
             viewPreloading1.src = 'src/img/hallview_full_left.png'; // preloading
             viewPreloading2.src = 'src/img/hallview_half_left.png'; // preloading
-            viewPreloading3.src= 'src/img/hallview_end_left.png'; // preloading
+            viewPreloading3.src = 'src/img/hallview_end_left.png'; // preloading
 
-            viewPreloading4.src= 'src/img/hallview_full_right.png'; // preloading
-            viewPreloading5.src= 'src/img/hallview_half_right.png'; // preloading
-            viewPreloading6.src= 'src/img/hallview_end_right.png'; // preloading
+            viewPreloading4.src = 'src/img/hallview_full_right.png'; // preloading
+            viewPreloading5.src = 'src/img/hallview_half_right.png'; // preloading
+            viewPreloading6.src = 'src/img/hallview_end_right.png'; // preloading
 
             // if(mapData.gameView.src === 'src/img/hallview_full.png') { // todo change this shit
             //     viewPreloading1.onload = function() {
@@ -134,12 +137,11 @@
             // }
 
             var viewG = new Image;
-            console.log(mapData); // TODO remove debug!!
             viewG.src = mapData.gameView.src;
+            canvasContext3D.drawImage(viewG, mapData.gameView.x, mapData.gameView.y);
             viewG.onload = function() {
                 canvasContext3D.drawImage(viewG, mapData.gameView.x, mapData.gameView.y);
             };
-            canvasContext3D.drawImage(viewG, mapData.gameView.x, mapData.gameView.y);
 
 
         };

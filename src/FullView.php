@@ -9,14 +9,22 @@ class FullView extends View
 {
     public $src;
 
-    public function __construct($direction)
+    public function __construct(int $direction, int $nextDirection)
     {
-        if ($direction === WallGenerator::DIRECTION_RIGHT) {
+        if ($nextDirection === WallGenerator::DIRECTION_RIGHT) {
             $this->src = 'src/img/hallview_full_right.png';
         }
 
-        if ($direction === WallGenerator::DIRECTION_LEFT) {
+        if ($nextDirection === WallGenerator::DIRECTION_LEFT) {
             $this->src = 'src/img/hallview_full_left.png';
+        }
+
+        if ($direction === WallGenerator::DIRECTION_RIGHT && $nextDirection === WallGenerator::DIRECTION_UP) {
+            $this->src = 'src/img/hallview_full_left.png';
+        }
+
+        if ($direction === WallGenerator::DIRECTION_LEFT && $nextDirection === WallGenerator::DIRECTION_UP) {
+            $this->src = 'src/img/hallview_half_right.png';
         }
     }
 }
