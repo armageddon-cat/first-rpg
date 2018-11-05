@@ -3,19 +3,17 @@ declare(strict_types=1);
 
 namespace app;
 
-use app\base\Canvas;
-
-class FullView extends View
+class MobView
 {
     public $src;
 
     public function __construct($direction)
     {
-        if ($direction === WallGenerator::DIRECTION_RIGHT) {
+        if ($direction === Canvas::CODE_RIGHT_ARROW) {
             $this->src = 'src/img/hallview_full_right.png';
         }
 
-        if ($direction === WallGenerator::DIRECTION_LEFT) {
+        if ($direction === Canvas::CODE_LEFT_ARROW) {
             $this->src = 'src/img/hallview_full_left.png';
         }
     }

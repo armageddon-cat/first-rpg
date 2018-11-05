@@ -10,10 +10,10 @@ class WallGenerator
     private const WALL_STRAIGHT_LENGTH = 3;
     private const WALL_TURN_STRAIGHT_LENGTH = 2;
     private const WALL_TURN_TURN_LENGTH = 1;
-    private const DIRECTION_LEFT = 2;
-    private const DIRECTION_UP = 1;
-    private const DIRECTION_RIGHT = 3;
-    private const DIRECTION_DOWN = 0;
+    public const DIRECTION_LEFT = 2;
+    public const DIRECTION_UP = 1;
+    public const DIRECTION_RIGHT = 3;
+    public const DIRECTION_DOWN = 0;
 
     /**
      * @throws \Exception
@@ -54,11 +54,18 @@ class WallGenerator
         $wallReg::unsetRegistry();
         $path = Map::getInstance()->path;
 
+        $previousDirection = $direction;
+        $nextDirection = $this->simpleChooseDirection($previousDirection);
+
         // left side wall chunk
         $initWallCoordinateX = $middle; // todo make chunk class
         $initWallCoordinateY = Canvas::CANVAS_SIZE - Wall::SIZE_Y - Player::OFFSET;
         $wall = new Wall($initWallCoordinateX, $initWallCoordinateY); // todo maybe make left and right class wall
         $wallReg::add($wall);
+        $playerBlockX = $initWallCoordinateX + Wall::SIZE_X + Player::OFFSET;
+        $playerBlockY = $initWallCoordinateY;
+        $playerBlock = new Block($playerBlockX, $playerBlockY, Wall::SIZE_X, Wall::SIZE_Y);
+        $path->addViews($playerBlock, View::FULL_VIEW, $nextDirection);
         for ($i=1;$i<self::WALL_STRAIGHT_LENGTH;$i++) {
             $initWallCoordinateY=$initWallCoordinateY-Wall::SIZE_Y- Wall::OFFSET;
             $wall = new Wall($initWallCoordinateX, $initWallCoordinateY);
@@ -67,7 +74,7 @@ class WallGenerator
             $freeBlockY = $initWallCoordinateY;
             $freeBlock = new Block($freeBlockX, $freeBlockY, Wall::SIZE_X, Wall::SIZE_Y);
             $path->addFreeBlocks($freeBlock);
-            $path->addViews($freeBlock, View::VIEWS[$i]);
+            $path->addViews($freeBlock, View::VIEWS[$i], $nextDirection);
         }
         $lastLeftWall = $wall;
         // right side wall chunk
@@ -81,9 +88,10 @@ class WallGenerator
             $wallReg::add($wall);
         }
         $lastRightWall = $wall;
-        $previousDirection = $direction;
+
         for ($chunkQuantity = 0; $chunkQuantity < 10; $chunkQuantity++) {
-            $direction = $this->simpleChooseDirection($previousDirection);
+            $direction = $nextDirection;
+            $nextDirection = $this->simpleChooseDirection($previousDirection);
             if ($direction === $previousDirection) {
                 continue; // todo to be easier no repeating directions
              }
@@ -109,7 +117,7 @@ class WallGenerator
                         $freeBlockY = $initWallCoordinateY + Wall::SIZE_Y + Player::OFFSET;
                         $freeBlock = new Block($freeBlockX, $freeBlockY, Wall::SIZE_X, Wall::SIZE_Y);
                         $path->addFreeBlocks($freeBlock);
-                        $path->addViews($freeBlock, View::VIEWS[$i]);
+                        $path->addViews($freeBlock, View::VIEWS[$i], $nextDirection);
                         $initWallCoordinateX = ($initWallCoordinateX-Wall::SIZE_X- Wall::OFFSET);
                     }
                     $lastRightWall = $wall;
@@ -148,7 +156,7 @@ class WallGenerator
                         $freeBlockY = $initWallCoordinateY + Wall::SIZE_Y + Player::OFFSET;
                         $freeBlock = new Block($freeBlockX, $freeBlockY, Wall::SIZE_X, Wall::SIZE_Y);
                         $path->addFreeBlocks($freeBlock);
-                        $path->addViews($freeBlock, View::VIEWS[$i]);
+                        $path->addViews($freeBlock, View::VIEWS[$i], $nextDirection);
                         $initWallCoordinateX = ($initWallCoordinateX+Wall::SIZE_X+ Wall::OFFSET);
                     }
                     $lastLeftWall = $wall;
@@ -190,7 +198,7 @@ class WallGenerator
                         $freeBlockY = $initWallCoordinateY;
                         $freeBlock = new Block($freeBlockX, $freeBlockY, Wall::SIZE_X, Wall::SIZE_Y);
                         $path->addFreeBlocks($freeBlock);
-                        $path->addViews($freeBlock, View::VIEWS[$i]);
+                        $path->addViews($freeBlock, View::VIEWS[$i], $nextDirection);
                         $initWallCoordinateY = ($initWallCoordinateY-Wall::SIZE_Y- Wall::OFFSET);
                     }
                     $lastLeftWall = $wall;
@@ -232,7 +240,7 @@ class WallGenerator
                         $freeBlockY = $initWallCoordinateY;
                         $freeBlock = new Block($freeBlockX, $freeBlockY, Wall::SIZE_X, Wall::SIZE_Y);
                         $path->addFreeBlocks($freeBlock);
-                        $path->addViews($freeBlock, View::VIEWS[$i]);
+                        $path->addViews($freeBlock, View::VIEWS[$i], $nextDirection);
                         $initWallCoordinateY = ($initWallCoordinateY-Wall::SIZE_Y- Wall::OFFSET);
                     }
                     $lastRightWall = $wall;

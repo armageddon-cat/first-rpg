@@ -102,28 +102,44 @@
             var viewPreloading2 = new Image;// preloading
             var viewPreloading3 = new Image;// preloading
 
-            viewPreloading1.src = 'src/img/hallview_full.png'; // preloading
-            viewPreloading2.src = 'src/img/hallview_half.png'; // preloading
-            viewPreloading3.src= 'src/img/hallview_end.png'; // preloading
+            var viewPreloading4 = new Image;// preloading
+            var viewPreloading5 = new Image;// preloading
+            var viewPreloading6 = new Image;// preloading
 
-            if(mapData.gameView.src === 'src/img/hallview_full.png') { // todo change this shit
-                viewPreloading1.onload = function() {
-                    canvasContext3D.drawImage(viewPreloading1, mapData.gameView.x, mapData.gameView.y);
-                };
-                canvasContext3D.drawImage(viewPreloading1, mapData.gameView.x, mapData.gameView.y);
-            }
-            if(mapData.gameView.src === 'src/img/hallview_half.png') {
-                viewPreloading2.onload = function() {
-                    canvasContext3D.drawImage(viewPreloading2, mapData.gameView.x, mapData.gameView.y);
-                };
-                canvasContext3D.drawImage(viewPreloading2, mapData.gameView.x, mapData.gameView.y);
-            }
-            if(mapData.gameView.src === 'src/img/hallview_end.png') {
-                viewPreloading3.onload = function() {
-                    canvasContext3D.drawImage(viewPreloading3, mapData.gameView.x, mapData.gameView.y);
-                };
-                canvasContext3D.drawImage(viewPreloading3, mapData.gameView.x, mapData.gameView.y);
-            }
+            viewPreloading1.src = 'src/img/hallview_full_left.png'; // preloading
+            viewPreloading2.src = 'src/img/hallview_half_left.png'; // preloading
+            viewPreloading3.src= 'src/img/hallview_end_left.png'; // preloading
+
+            viewPreloading4.src= 'src/img/hallview_full_right.png'; // preloading
+            viewPreloading5.src= 'src/img/hallview_half_right.png'; // preloading
+            viewPreloading6.src= 'src/img/hallview_end_right.png'; // preloading
+
+            // if(mapData.gameView.src === 'src/img/hallview_full.png') { // todo change this shit
+            //     viewPreloading1.onload = function() {
+            //         canvasContext3D.drawImage(viewPreloading1, mapData.gameView.x, mapData.gameView.y);
+            //     };
+            //     canvasContext3D.drawImage(viewPreloading1, mapData.gameView.x, mapData.gameView.y);
+            // }
+            // if(mapData.gameView.src === 'src/img/hallview_half.png') {
+            //     viewPreloading2.onload = function() {
+            //         canvasContext3D.drawImage(viewPreloading2, mapData.gameView.x, mapData.gameView.y);
+            //     };
+            //     canvasContext3D.drawImage(viewPreloading2, mapData.gameView.x, mapData.gameView.y);
+            // }
+            // if(mapData.gameView.src === 'src/img/hallview_end.png') {
+            //     viewPreloading3.onload = function() {
+            //         canvasContext3D.drawImage(viewPreloading3, mapData.gameView.x, mapData.gameView.y);
+            //     };
+            //     canvasContext3D.drawImage(viewPreloading3, mapData.gameView.x, mapData.gameView.y);
+            // }
+
+            var viewG = new Image;
+            console.log(mapData); // TODO remove debug!!
+            viewG.src = mapData.gameView.src;
+            viewG.onload = function() {
+                canvasContext3D.drawImage(viewG, mapData.gameView.x, mapData.gameView.y);
+            };
+            canvasContext3D.drawImage(viewG, mapData.gameView.x, mapData.gameView.y);
 
 
         };

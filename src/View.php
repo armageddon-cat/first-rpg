@@ -26,16 +26,16 @@ class View
         self::END_VIEW,
     ];
 
-    public function __construct($viewType)
+    public function __construct($viewType, $direction)
     {
         if ($viewType === self::FULL_VIEW) {
-            $this->view = new FullView();
+            $this->view = new FullView($direction);
         }
         if ($viewType === self::HALF_VIEW) {
-            $this->view = new HalfView();
+            $this->view = new HalfView($direction);
         }
         if ($viewType === self::END_VIEW) {
-            $this->view = new EndView();
+            $this->view = new EndView($direction);
         }
     }
 }
