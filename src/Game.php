@@ -41,6 +41,15 @@ class Game
         return $this->map->path->views;
     }
 
+    public function getViewByCoordinates($x, $y): View
+    {
+        /** @var View[] $view */
+        $views = $this->getViews();
+        /** @var View $view */
+        $view = $views[$x . ':' . $y];
+        return $view;
+    }
+
     public function prepareJsonToClient(): string
     {
         $result = [];
@@ -52,16 +61,18 @@ class Game
         /** @var View[] $view */
         $views = $this->getViews();
         /** @var View $view */
-        $view = $views[$map->player->x . ':' . $map->player->y];
+        $view = $this->getViewByCoordinates($map->player->x, $map->player->y);
         $result['gameView'] = ['x' => $view->view->initX, 'y' => $view->view->initY, 'src' => $view->view->src];
         if (!empty($map->mobs)) {
             $result['mobs'][] = ['x' => $map->mobs->x, 'y' => $map->mobs->y, 'src' => $map->mobs->hpSrc]; // todo now one. in future maybe more
             /** @var View $viewMob */
-            $viewMob = $views[$map->mobs->x . ':' . $map->mobs->y];
-            foreach ($viewMob->mobView->mobVisibleBlocks as $mobVisibleBlocks) {
-                if ($mobVisibleBlocks->x === $map->player->x && $mobVisibleBlocks->y === $map->player->y) {
-                    $result['mobsView'][] = ['x' => $viewMob->mobView->initX, 'y' => $viewMob->mobView->initY, 'src' => $viewMob->mobView->src];
-                    break;
+            $viewMob = $this->getViewByCoordinates($map->mobs->x, $map->mobs->y);
+            if (!empty($viewMob->mobView->mobVisibleBlocks)) {
+                foreach ($viewMob->mobView->mobVisibleBlocks as $mobVisibleBlocks) {
+                    if ($mobVisibleBlocks->x === $map->player->x && $mobVisibleBlocks->y === $map->player->y) {
+                        $result['mobsView'][] = ['x' => $viewMob->mobView->initX, 'y' => $viewMob->mobView->initY, 'src' => $viewMob->mobView->src];
+                        break;
+                    }
                 }
             }
 

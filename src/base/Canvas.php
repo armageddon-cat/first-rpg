@@ -14,9 +14,9 @@ abstract class Canvas
     public const AXIS_X = 'x';
     public const AXIS_Y = 'y';
     public const CODE_ALL_ARROWS = [
-        self::CODE_LEFT_ARROW,
-        self::CODE_UP_ARROW,
-        self::CODE_RIGHT_ARROW,
-        self::CODE_DOWN_ARROW,
+        self::CODE_LEFT_ARROW => self::CODE_LEFT_ARROW,
+        self::CODE_UP_ARROW => self::CODE_UP_ARROW,
+        self::CODE_RIGHT_ARROW => self::CODE_RIGHT_ARROW,
+        self::CODE_DOWN_ARROW => self::CODE_DOWN_ARROW,
     ];
 }

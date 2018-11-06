@@ -7,6 +7,7 @@ use app\base\Canvas;
 
 class Player extends Entity
 {
+    public $direction;
     /**
      * Player constructor.
      * @throws \Exception
@@ -30,6 +31,7 @@ class Player extends Entity
         $this->y = $block->y;
         $path = Map::getInstance()->path;
         $path->playerPosition = $block;
+        $this->direction = Canvas::CODE_UP_ARROW;
 
         $this->type = new Fighter(); // todo make customisable
     }

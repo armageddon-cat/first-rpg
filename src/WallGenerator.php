@@ -10,21 +10,11 @@ class WallGenerator
     private const WALL_STRAIGHT_LENGTH = 3;
     private const WALL_TURN_STRAIGHT_LENGTH = 2;
     private const WALL_TURN_TURN_LENGTH = 1;
-    public const DIRECTION_LEFT = 2;
-    public const DIRECTION_UP = 1;
-    public const DIRECTION_RIGHT = 3;
-    public const DIRECTION_DOWN = 0;
-
-    /**
-     * @throws \Exception
-     */
-    public function chooseDirection($noDown = false): int
-    {
-        if ($noDown) {
-            return random_int(self::DIRECTION_UP, self::DIRECTION_RIGHT);
-        }
-        return random_int(self::DIRECTION_DOWN, self::DIRECTION_RIGHT);
-    }
+    // todo smth to refactor
+    public const DIRECTION_LEFT = Canvas::CODE_LEFT_ARROW;
+    public const DIRECTION_UP = Canvas::CODE_UP_ARROW;
+    public const DIRECTION_RIGHT = Canvas::CODE_RIGHT_ARROW;
+    public const DIRECTION_DOWN = Canvas::CODE_DOWN_ARROW;
 
     /**
      *  // todo to be easier no repeating directions
@@ -34,7 +24,11 @@ class WallGenerator
     public function simpleChooseDirection(int $previousDirection): int
     {
         if ($previousDirection === self::DIRECTION_UP) {
-            return random_int(self::DIRECTION_LEFT, self::DIRECTION_RIGHT);
+            $dirChooser = random_int(0, 1);
+            if ($dirChooser === 0) {
+                return self::DIRECTION_LEFT;
+            }
+            return self::DIRECTION_RIGHT;
         }
         if ($previousDirection === self::DIRECTION_LEFT || self::DIRECTION_RIGHT) {
             return self::DIRECTION_UP;
@@ -48,7 +42,6 @@ class WallGenerator
     {
 
         $direction = self::DIRECTION_UP; // default
-        $noDown = true; // default
         $middle = Canvas::CANVAS_SIZE / 2;
         $wallReg = WallRegistry::getInstance();
         $wallReg::unsetRegistry();
@@ -117,7 +110,11 @@ class WallGenerator
                         $freeBlockY = $initWallCoordinateY + Wall::SIZE_Y + Player::OFFSET;
                         $freeBlock = new Block($freeBlockX, $freeBlockY, Wall::SIZE_X, Wall::SIZE_Y);
                         $path->addFreeBlocks($freeBlock);
-                        $path->addViews($freeBlock, View::VIEWS[$i], $direction, $nextDirection);
+                        if ($i === 0) {
+                            $path->addViews($freeBlock, View::VIEWS[$i], $direction, $nextDirection, $previousDirection);
+                        } else {
+                            $path->addViews($freeBlock, View::VIEWS[$i], $direction, $nextDirection);
+                        }
                         $initWallCoordinateX = ($initWallCoordinateX-Wall::SIZE_X- Wall::OFFSET);
                     }
                     $lastRightWall = $wall;
@@ -131,8 +128,6 @@ class WallGenerator
                     }
                     $lastLeftWall = $wall;
                     $previousDirection = $direction;
-//                    $noDown = false;// todo to be easier no down direction
-                    $noDown = true;
                     continue;
                 }
 
@@ -156,7 +151,11 @@ class WallGenerator
                         $freeBlockY = $initWallCoordinateY + Wall::SIZE_Y + Player::OFFSET;
                         $freeBlock = new Block($freeBlockX, $freeBlockY, Wall::SIZE_X, Wall::SIZE_Y);
                         $path->addFreeBlocks($freeBlock);
-                        $path->addViews($freeBlock, View::VIEWS[$i], $direction, $nextDirection);
+                        if ($i === 0) {
+                            $path->addViews($freeBlock, View::VIEWS[$i], $direction, $nextDirection, $previousDirection);
+                        } else {
+                            $path->addViews($freeBlock, View::VIEWS[$i], $direction, $nextDirection);
+                        }
                         $initWallCoordinateX = ($initWallCoordinateX+Wall::SIZE_X+ Wall::OFFSET);
                     }
                     $lastLeftWall = $wall;
@@ -171,8 +170,6 @@ class WallGenerator
                     $lastRightWall = $wall;
 
                     $previousDirection = $direction;
-//                    $noDown = false;// todo to be easier no down direction
-                    $noDown = true;
                     continue;
                 }
             }
@@ -198,7 +195,11 @@ class WallGenerator
                         $freeBlockY = $initWallCoordinateY;
                         $freeBlock = new Block($freeBlockX, $freeBlockY, Wall::SIZE_X, Wall::SIZE_Y);
                         $path->addFreeBlocks($freeBlock);
-                        $path->addViews($freeBlock, View::VIEWS[$i], $direction, $nextDirection);
+                        if ($i === 0) {
+                            $path->addViews($freeBlock, View::VIEWS[$i], $direction, $nextDirection, $previousDirection);
+                        } else {
+                            $path->addViews($freeBlock, View::VIEWS[$i], $direction, $nextDirection);
+                        }
                         $initWallCoordinateY = ($initWallCoordinateY-Wall::SIZE_Y- Wall::OFFSET);
                     }
                     $lastLeftWall = $wall;
@@ -213,7 +214,6 @@ class WallGenerator
                     $lastRightWall = $wall;
 
                     $previousDirection = $direction; // todo make this chunk property
-                    $noDown = true;
                     continue;
                 }
 
@@ -240,7 +240,11 @@ class WallGenerator
                         $freeBlockY = $initWallCoordinateY;
                         $freeBlock = new Block($freeBlockX, $freeBlockY, Wall::SIZE_X, Wall::SIZE_Y);
                         $path->addFreeBlocks($freeBlock);
-                        $path->addViews($freeBlock, View::VIEWS[$i], $direction, $nextDirection);
+                        if ($i === 0) {
+                            $path->addViews($freeBlock, View::VIEWS[$i], $direction, $nextDirection, $previousDirection);
+                        } else {
+                            $path->addViews($freeBlock, View::VIEWS[$i], $direction, $nextDirection);
+                        }
                         $initWallCoordinateY = ($initWallCoordinateY-Wall::SIZE_Y- Wall::OFFSET);
                     }
                     $lastRightWall = $wall;
@@ -256,7 +260,6 @@ class WallGenerator
 
 
                     $previousDirection = $direction; // todo make this chunk property
-                    $noDown = true;
                     continue;
                 }
 

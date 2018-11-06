@@ -25,8 +25,8 @@ class Path
         }
     }
 
-    public function addViews(Block $block, int $viewType, int $direction, int $nextDirection): void
+    public function addViews(Block $block, int $viewType, int $direction, int $nextTurnDirection, ?int $previousDirection = null): void
     {
-        $this->views[$block->x . ':' . $block->y] = new View($viewType, $direction, $nextDirection, $block);
+        $this->views[$block->x . ':' . $block->y] = new View($viewType, $direction, $nextTurnDirection, $block, $previousDirection);
     }
 }

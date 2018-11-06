@@ -10,7 +10,7 @@ class MobView extends View
 
     public function __construct(int $viewType)
     {
-        if ($viewType === View::FULL_VIEW) {
+        if ($viewType === View::FRONT_WALL_VIEW) {
             $this->src = 'src/img/mob3dFull.png';
         }
         if ($viewType === View::HALF_VIEW) {
